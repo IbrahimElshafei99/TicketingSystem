@@ -17,18 +17,18 @@ namespace Ticketing.Core.Context
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<City>().ToTable("City");
             modelBuilder.Entity<Media>().ToTable("Media");
-            modelBuilder.Entity<Role>().ToTable("Role");
+            modelBuilder.Entity<Role>().ToTable("Roles");
             modelBuilder.Entity<Status>().ToTable("Status");
             modelBuilder.Entity<Ticket>().ToTable("Ticket");
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<TicketType>().ToTable("TicketType");
             modelBuilder.Entity<User_City>().ToTable("User_City").HasKey(x => new{ x.CityId, x.UserId});
-            modelBuilder.Entity<User_Ticket>().ToTable("User_Ticket").HasKey(x=> new {x.TicketId, x.UserId, x.RoleId});
+            modelBuilder.Entity<User_Ticket>().ToTable("User_Ticket").HasKey(x=> new {x.TicketId, x.UserId});
         }
 
         public DbSet<City> City { get; set; }
         public DbSet<Media> Media { get; set; }
-        public DbSet<Role> Role { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<Ticket> Ticket { get; set; }
         public DbSet<User> User { get; set; }

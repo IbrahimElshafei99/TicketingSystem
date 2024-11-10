@@ -23,6 +23,11 @@ namespace Ticketing.Core.Repos
         {
             return await _context.Ticket.ToListAsync();
         }
+
+        public async Task OpenTicket()
+        {
+
+        }
     }
 
 }

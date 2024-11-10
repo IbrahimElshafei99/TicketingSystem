@@ -50,10 +50,12 @@ namespace Ticketing.Business.Services
 
         private async Task<string> GenerateJWT(User user)
         {
+            var userRole = await _userRepo.GetRoleById(user.RoleId);
             var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
                 new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, userRole),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
             };
 

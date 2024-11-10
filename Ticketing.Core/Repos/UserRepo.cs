@@ -52,4 +52,13 @@ public class UserRepo : IUserRepo
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<string> GetRoleById(int roleId)
+    {
+        var role = await _context.Roles.FirstOrDefaultAsync(x => x.RoleId == roleId);
+        if (role == null)
+            return null;
+        return role.RoleName;
+    }
+
 }

@@ -13,5 +13,6 @@ namespace Ticketing.Core.Interfaces
         Task<bool> AddUser(UserRegistrationDTO userRegistration);
         Task<User> FindUserBy(string PN);
         Task<bool> IsRegistered(UserRegistrationDTO R_user);
+        Task<string> GetRoleById(int roleId);
     }
 }

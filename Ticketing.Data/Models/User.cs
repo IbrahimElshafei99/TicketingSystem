@@ -21,6 +21,8 @@ namespace Ticketing.Data.Models
         public string? Address { get; set; }
         public int StatusId { get; set; }
         public Status? Status { get; set; }
+        public int RoleId { get; set; }
+        public Role? Role { get; set; }
 
 
 

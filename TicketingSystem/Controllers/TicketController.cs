@@ -28,5 +28,14 @@ namespace TicketingSystem.Controllers
             }
             return Ok(tickets);
         }
+
+        /*[Authorize]
+        [HttpPost]
+        [Route("")]
+        public async Task<IActionResult> OpenNewTicket()
+        {
+
+        }*/
+
     }
 }
