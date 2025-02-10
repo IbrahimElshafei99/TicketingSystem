@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Text;
 using Ticketing.Business.Interfaces;
 using Ticketing.Business.Services;
@@ -28,6 +29,7 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITicketRepo, TicketRepo>();
 builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped(typeof(IGenericsRepo<>), typeof(GenericsRepo<>));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -53,7 +55,12 @@ builder.Services.AddAuthorization(option =>
     option.AddPolicy("AdminOnly", opt => opt.RequireRole("Manager", "Support Team"));
 });
 
+var logger = new LoggerConfiguration().ReadFrom.Configuration(config).CreateLogger();
+//builder.Logging.AddSerilog(logger);
+builder.Host.UseSerilog(logger);
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -63,6 +70,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseSerilogRequestLogging();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
