@@ -30,6 +30,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITicketRepo, TicketRepo>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped(typeof(IGenericsRepo<>), typeof(GenericsRepo<>));
+builder.Services.AddScoped<HttpClient>();
 
 builder.Services.AddAuthentication(options =>
 {

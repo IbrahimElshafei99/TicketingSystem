@@ -95,7 +95,7 @@ namespace TicketingSystem.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("ModifyByOperator")]
         public async Task<IActionResult> ModifyByOperator(TicketForOperatorDTO ticket)
         {
