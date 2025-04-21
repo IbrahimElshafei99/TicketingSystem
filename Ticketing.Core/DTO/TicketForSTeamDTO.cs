@@ -11,6 +11,9 @@ namespace Ticketing.Core.DTO
     public class TicketForSTeamDTO
     {
         // business ticket identifier property => ticketCode
+        [Required]
+        public int TicketIdentifier { get; set; } 
+        [Required]
         public DateTime ActiveDate { get; set; }
         [Required]
         public string Address { get; set; } = string.Empty;
@@ -18,5 +21,6 @@ namespace Ticketing.Core.DTO
         public decimal? Longitude { get; set; } 
         public string? Comment { get; set; }
         public string? TicketTypeText { get; set; }
+        public int OperatorId { get; set; }
     }
 }

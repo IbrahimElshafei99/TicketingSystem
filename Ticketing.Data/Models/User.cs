@@ -23,8 +23,8 @@ namespace Ticketing.Data.Models
         public Status? Status { get; set; }
         public int RoleId { get; set; }
         public Role? Role { get; set; }
-
-
-
+/*
+        public ICollection<User_Ticket>? User_Tickets { get; set; }
+        public ICollection<User_City>? User_Cities { get; set; }*/
     }
 }

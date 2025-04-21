@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Ticketing.Business.Interfaces;
+using Ticketing.Business.Services;
 using Ticketing.Core.DTO;
 
 namespace TicketingSystem.Controllers
@@ -11,10 +12,14 @@ namespace TicketingSystem.Controllers
     public class UserController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IAuthService authService)
+        public UserController(IAuthService authService, IUserService userService, ILogger<UserController> logger)
         {
             _authService = authService;
+            _userService = userService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -54,6 +59,27 @@ namespace TicketingSystem.Controllers
             });
 
         }
+
+        [HttpGet]
+        [Route("GetAssignedOperators")]
+        public async Task<IActionResult> GetAssignedOperators(string city, DateTime date)
+        {
+            try
+            {
+                var operators = await _userService.GetAssignedOperators(city, date);
+                if (operators != null)
+                {
+                    return Ok(operators);
+                }
+                throw new NullReferenceException("No operators found");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error in getting assigned operators: {message}", ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
 

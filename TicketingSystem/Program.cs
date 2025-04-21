@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -29,6 +30,7 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITicketRepo, TicketRepo>();
 builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped(typeof(IGenericsRepo<>), typeof(GenericsRepo<>));
 builder.Services.AddScoped<HttpClient>();
 
@@ -56,6 +58,14 @@ builder.Services.AddAuthorization(option =>
     option.AddPolicy("AdminOnly", opt => opt.RequireRole("Manager", "Support Team"));
 });
 
+builder.Services.AddCors();/* (options =>
+{
+    options.AddPolicy("myPolicy", opt =>
+    {
+        opt.WithOrigins("https://localhost:7152/DynamicTickets").AllowAnyMethod().AllowAnyHeader();
+    });
+});*/
+
 var logger = new LoggerConfiguration().ReadFrom.Configuration(config).CreateLogger();
 //builder.Logging.AddSerilog(logger);
 builder.Host.UseSerilog(logger);
@@ -73,7 +83,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
 
-
+app.UseCors(opt=>opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseAuthentication();
 app.UseAuthorization();
 

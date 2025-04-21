@@ -100,10 +100,36 @@ namespace Ticketing.Core.Repos
             return await _context.Ticket.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<Ticket> GetByTicketIdentifier(int id)
+        {
+            return await _context.Ticket.FirstOrDefaultAsync(x => x.TicketIdentifier == id);
+        }
+
+
         public async Task<TicketType> GetTicketType(string T_type)
         {
             return await _context.TicketType.FirstOrDefaultAsync(x => x.Type_Text.ToLower() == T_type.ToLower());
 
+        }
+        public async Task<int> GetTicketsCountByOperatorId(int id, DateTime date)
+        {
+            try
+            {
+                var tickets= await _context.Ticket.Join(_context.User_Ticket, t => t.Id, ut => ut.TicketId, (tick,userT) => new { Date= tick.ActiveDate,Ticket_Id = tick.Id, User_Id = userT.UserId})
+                    .Where(x => x.Date == date && x.User_Id==id)
+                    .ToListAsync();
+                
+                if(tickets == null || tickets.Count == 0)
+                    throw new Exception("No tickets found for the given date");
+
+                _logger.LogInformation("Tickets found successfully");
+                return tickets.Count;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error in Ticket repo with GetTicketsCountByOperatorId method: {message}", ex.Message);
+                return 0;
+            }
         }
     }
 

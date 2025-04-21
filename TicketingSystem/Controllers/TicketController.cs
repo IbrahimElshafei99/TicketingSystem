@@ -70,7 +70,27 @@ namespace TicketingSystem.Controllers
             
         }
 
-        
+        [HttpGet]
+        [Route("GetLatLong")]
+        public async Task<IActionResult> GetLatLong(string address)
+        {
+            try
+            {
+                var latlong = await _ticketService.GetLatLong(address);
+                if (latlong.Item1 != -1 && latlong.Item2 != -1)
+                {
+                    return Ok(latlong);
+                }
+                throw new NullReferenceException("Address is wrong");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Cannot get longitude and latitude for this address");
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPost]
         [Route("OpenNewTicket")]
         public async Task<IActionResult> OpenNewTicket(TicketForSTeamDTO ticket)
@@ -94,6 +114,8 @@ namespace TicketingSystem.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        
 
         [HttpPut]
         [Route("ModifyByOperator")]

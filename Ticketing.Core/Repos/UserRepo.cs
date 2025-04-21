@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,13 @@ namespace Ticketing.Core.Repos;
 public class UserRepo : IUserRepo
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<UserRepo> _logger;
 
-    public UserRepo(AppDbContext context)
+
+    public UserRepo(AppDbContext context, ILogger<UserRepo> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<bool> IsRegistered(UserRegistrationDTO R_user)
@@ -53,12 +57,104 @@ public class UserRepo : IUserRepo
         return true;
     }
 
+
+
     public async Task<string> GetRoleById(int roleId)
     {
-        var role = await _context.Roles.FirstOrDefaultAsync(x => x.RoleId == roleId);
-        if (role == null)
+        try
+        {
+            if (roleId == 0)
+                return null;
+
+            var role = await _context.Roles.FirstOrDefaultAsync(x => x.RoleId == roleId);
+            if (role == null)
+                return null;
+
+            return role.RoleName;
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error in GetRoleById: {message}", ex.Message);
             return null;
-        return role.RoleName;
+        }
+        finally
+        {
+            _logger.LogInformation("GetRoleById executed");
+
+        }
+    }
+
+    public async Task<int> GetRoleIdByRoleName(string roleName)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(roleName))
+                return 0;
+
+            var role = await _context.Roles.FirstOrDefaultAsync(x => x.RoleName == roleName);
+            if (role == null)
+                return 0;
+
+            return role.RoleId;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError( "Error in GetRoleIdByRoleName: {message}", ex.Message);
+            return 0;
+        }
+        
+    }   
+    public async Task<int>GetCityIdByCityName(string cityName)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(cityName))
+                return 0;
+
+            var city = await _context.City.FirstOrDefaultAsync(x => x.CityName == cityName);
+            if (city == null)
+                return 0;
+
+            return city.Id;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error in GetCityIdByCityName: {message}", ex.Message);
+            return 0;
+        }
+            
+    }
+
+    public async Task<List<User>> GetOperatorsByCity(string city)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(city))
+                return null;
+
+            int opratorId = await GetRoleIdByRoleName("Operator");
+            int cityId = await GetCityIdByCityName(city);
+            if (opratorId == 0 || cityId == 0)
+                return null;
+
+            var users = await _context.User_City
+                .Include(x => x.User)
+                .Where(x => x.CityId == cityId && x.User.RoleId == opratorId)
+                .Select(x => x.User).ToListAsync();
+            if (users == null || users.Count == 0)
+                return null;
+
+            return users;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error in GetOperatorsByCity: {message}", ex.Message);
+            return null;
+        }
+        
+        
+
     }
 
 }

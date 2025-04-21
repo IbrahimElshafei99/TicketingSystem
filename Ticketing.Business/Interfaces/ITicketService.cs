@@ -16,5 +16,6 @@ namespace Ticketing.Business.Interfaces
         Task OpenTicket(TicketForSTeamDTO ticketDto);
         Task<DataTable> ModifyTicketByOperator(TicketForOperatorDTO ticket);
         Task<Ticket> GetById(int id);
+        Task<(decimal, decimal)> GetLatLong(string address);
     }
 }

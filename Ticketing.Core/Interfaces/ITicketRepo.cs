@@ -12,8 +12,10 @@ namespace Ticketing.Core.Interfaces
     {
         Task<TicketType> GetTicketType(string T_type);
         Task<Ticket> GetById(int id);
+        Task<Ticket> GetByTicketIdentifier(int id);
         Task<DataTable> ExecuteTicketSP(int id = default, DateTime? activeDate = null, string address = null, decimal? latitude = null,
                                         decimal? longitude = null, string comment = null, bool? checkIn = null, int? statusId = null,
                                         int? ticketTypeId = null, string? filterString = null, string? columnList = null);
+        Task<int> GetTicketsCountByOperatorId(int id, DateTime date);
     }
 }
